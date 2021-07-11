@@ -13,4 +13,15 @@ async function downloadImage(imageSrc) {
     link.click()
     document.body.removeChild(link)
 }
-$("document").ready(downloadImage(imgUrl))
+// $("document").ready(downloadImage(imgUrl))
+$("document").ready(async ()=>{
+    const res = await fetch(window.location.href + '/get')
+    const data = await res.json()
+    if (Array.isArray(data)){
+        data.forEach((crater)=>{
+            downloadImage(crater.url)
+        })
+    }else{
+        downloadImage(data.url)
+    }
+})

@@ -22,23 +22,28 @@ app.get('/', (req,res)=>{
 app.get('/:code', async (req,res)=>{
     const crater = await Crater.findOne({code: req.params.code})
     .catch(e=>console.log(e))
+    if (!crater) return res.render('error', {code: req.params.code})
     res.render('crater', crater)
 })
+app.get('/:code/get', async (req,res)=>{
+    const craters = await Crater.find({code: req.params.code})
+    if (craters == null) return res.sendStatus(400)
+    res.send(craters)
+})
 app.post('/', async (req,res)=>{
-    const code = getRandomInt(100000, 999999)
     const body = {
         url: req.body.url,
         public_id: req.body.public_id,
-        code: code.toString()
+        code: req.body.code
     }
     const crater = await Crater.create(body).catch(e=>{
         console.log(e)
     })
     setTimeout(async ()=>{
-        const craterToDelete = await Crater.findOneAndDelete({code: crater.code})
+        const craterToDelete = await Crater.findByIdAndDelete(crater._id)
         if (!craterToDelete) return
         await cloudinary.uploader.destroy(craterToDelete.public_id, function(result,error) { console.log(error) })
-    } , 360000)
+    } , 300000)
 
     res.send({"code":crater.code})
 })
@@ -46,9 +51,3 @@ app.post('/', async (req,res)=>{
 app.listen(PORT, ()=>{
     console.log(`Server is up and running on port ${PORT}`)
 })
-
-function getRandomInt(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
-}
