@@ -8,4 +8,4 @@ As soon as you upload images through the phone, a timer that lasts 5 minutes sta
 ![Files selected](https://cdn.discordapp.com/attachments/769282603651956749/863796221679239188/unknown.png)  
 
 **PC** - Those files are then automatically downloaded to your PC upon arriving on *url/{code}*.  
-![Files donwloaded](https://cdn.discordapp.com/attachments/769282603651956749/863796660354154526/unknown.png)  
+![Files donwloaded](https://cdn.discordapp.com/attachments/707574253116981274/864842068157267998/unknown.png)  
