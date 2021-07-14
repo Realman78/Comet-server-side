@@ -1,0 +1,54 @@
+@import url("https://fonts.googleapis.com/css2?family=Staatliches&display=swap");
+* {
+  background-color: rgb(220 220 220);
+}
+html,
+body {
+  height: 100%;
+}
+.wrapper {
+  display: flex;
+  justify-content: center;
+  height: 100%;
+}
+.mainContainer {
+  flex-direction: column;
+}
+.textContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 50%;
+}
+.guideContainer {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.textContainer h1 {
+  font-size: 80px;
+  font-family: "Staatliches", cursive;
+  color: #547592;
+}
+.codeSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.codeSection input {
+  text-align: center;
+  font-size: 24px;
+  width: fit-content;
+}
+.codeSection button {
+  margin-top: 15px;
+  width: 75px;
+}
+p {
+  font-size: large;
+  color: #547592;
+}

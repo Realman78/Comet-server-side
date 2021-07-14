@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
 const path = require('path')
+const hbs = require('hbs')
 const PORT = process.env.PORT || 3000
 const Crater = require('./Schemas/CraterSchema')
 var cloudinary = require('cloudinary').v2
@@ -12,12 +13,14 @@ cloudinary.config({
 });
 
 app.use(express.json({limit: '50mb'}));
-app.set('views', path.join(__dirname, 'views'))
+app.set('views', path.join(__dirname, '/templates/views'))
 app.set('view engine', 'hbs')
 app.use(express.static(path.join(__dirname, 'public')))
+const partialsPath = path.join(__dirname, '/templates/partials')
+hbs.registerPartials(partialsPath)
 
 app.get('/', (req,res)=>{
-    res.send({'term':'ok my king'})
+    res.render('home')
 })
 app.get('/:code', async (req,res)=>{
     const crater = await Crater.findOne({code: req.params.code})

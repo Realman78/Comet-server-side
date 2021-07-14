@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {{>main}}
+    <title>Comet</title>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="mainContainer">
+            <div class="textContainer">
+                <h1>Comet</h1>
+                <div class="guideContainer">
+                    <div class="up">
+                        <p>You can go to <i>url/code</i> for the documents you submitted</p>
+                    </div>
+                    
+                    <div class="center">
+                        <p>Or</p>
+                    </div>
+                    <div class="bottom">
+                        <p>Type the code down below</p>
+                    </div>
+                    
+                </div>
+
+            </div>
+            <div class="codeSection">
+                <input class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder="Code"
+                    type="text" name="" id="codeInput" autocomplete="off" maxlength="6">
+                <button class="btn btn-outline-primary" id="joinButton" onclick="join()">GO</button>
+
+            </div>
+        </div>
+
+    </div>
+    <script src="/js/home.js"></script>
+</body>
+</html>
