@@ -13,6 +13,7 @@ cloudinary.config({
 });
 
 app.use(express.json({limit: '50mb'}));
+app.use(express.json());
 app.set('views', path.join(__dirname, '/templates/views'))
 app.set('view engine', 'hbs')
 app.use(express.static(path.join(__dirname, 'public')))
@@ -25,12 +26,12 @@ app.get('/', (req,res)=>{
 app.get('/:code', async (req,res)=>{
     const crater = await Crater.findOne({code: req.params.code})
     .catch(e=>console.log(e))
-    if (!crater) return res.render('error', {code: req.params.code})
+    if (!crater) return res.render('error',{code: req.params.code, error: `No files with the code ${req.params.code}`})
     res.render('crater', crater)
 })
 app.get('/:code/get', async (req,res)=>{
     const craters = await Crater.find({code: req.params.code})
-    if (craters == null) return res.sendStatus(400)
+    if (craters.length == 0) return res.send({code: req.params.code, error: `No files with the code ${req.params.code}`})
     res.send(craters)
 })
 app.post('/', async (req,res)=>{

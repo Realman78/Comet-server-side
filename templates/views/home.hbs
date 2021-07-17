@@ -21,21 +21,32 @@
                         <p>Or</p>
                     </div>
                     <div class="bottom">
-                        <p>Type the code down below</p>
+                        <p>Type the given code down below</p>
                     </div>
                     
                 </div>
 
             </div>
             <div class="codeSection">
-                <input class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder="Code"
+                <input class="digitInput" id="first" type="text" maxlength="1">
+                <input class="digitInput" id="second" type="text" maxlength="1">
+                <input class="digitInput" type="text" maxlength="1">
+                <input class="digitInput" type="text" maxlength="1">
+                <input class="digitInput" type="text" maxlength="1">
+                <input class="digitInput" type="text" maxlength="1">
+                {{!-- <input class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder="Code"
                     type="text" name="" id="codeInput" autocomplete="off" maxlength="6">
-                <button class="btn btn-outline-primary" id="joinButton" onclick="join()">GO</button>
-
+                <button class="btn btn-outline-primary" id="joinButton" onclick="join()">GO</button> --}}
+            </div>
+            <div class="informationContainer">
+                <img id="loading" src="https://icon-library.com/images/loading-icon-transparent-background/loading-icon-transparent-background-12.jpg" alt="">
+                <p id="info"></p>
             </div>
         </div>
 
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="/js/home.js"></script>
 </body>
 </html>
