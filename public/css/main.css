@@ -71,6 +71,7 @@ body {
 p {
   font-size: large;
   color: var(--text-color);
+  text-align: center;
 }
 #codeInput {
   background-color: var(--text-color);

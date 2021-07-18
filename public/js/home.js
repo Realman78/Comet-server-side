@@ -15,18 +15,18 @@ $(".digitInput").keydown(function(e) {
         return false;
     } else if (e.shiftKey || e.which <= 47 || e.which >= 58) {
         return false;
-    }
-}).keyup (function () {
-    if (this.value.length >= charLimit) {
-        $(this).next('.digitInput').focus();
-        if (isFull()){
-            document.getElementById('loading').style.visibility = "visible"
-            redirectToCrater(code)
+    }else if (e.which > 47 && e.which < 58){
+        this.value = e.key
+        if (this.value.length >= charLimit) {
+            $(this).next('.digitInput').focus();
+            if (isFull()){
+                document.getElementById('loading').style.visibility = "visible"
+                redirectToCrater(code)
+            }
+            return false;
         }
-        return false;
     }
-});
-
+})
 function isFull(){
     code = ""
     for (const dig of inputs){
