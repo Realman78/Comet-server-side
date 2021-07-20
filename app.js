@@ -46,8 +46,15 @@ app.post('/', async (req,res)=>{
     setTimeout(async ()=>{
         const craterToDelete = await Crater.findByIdAndDelete(crater._id)
         if (!craterToDelete) return
-        await cloudinary.uploader.destroy(craterToDelete.public_id, function(result,error) { console.log(error) })
-    } , 300000)
+        await cloudinary.uploader.destroy(craterToDelete.public_id, async function(error,result) {
+            console.log(result, error)
+            if (result.result === 'not found'){
+                await cloudinary.uploader.destroy(craterToDelete.public_id, {resource_type: 'video'}, function(err, res2){console.log(res2,err)})
+            }
+        }).catch((err)=>{
+            console.log(err)
+        })
+    } , 30000)
 
     res.send({"code":crater.code})
 })
