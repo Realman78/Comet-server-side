@@ -54,10 +54,13 @@ async function redirectToCrater(tmpCode){
         document.getElementById('info').textContent = data.error
         return
     }
+	
     if (Array.isArray(data)){
         let tmp = data[0].code
         location.href = `/${tmp}`
+		cleanInputs()
         return
     }
+	cleanInputs()
     location.href = `/${data.code}`
 }

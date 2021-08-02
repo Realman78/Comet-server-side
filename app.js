@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express')
 const app = express()
 const path = require('path')
@@ -7,9 +8,9 @@ const Crater = require('./Schemas/CraterSchema')
 var cloudinary = require('cloudinary').v2
 require('./db')
 cloudinary.config({ 
-    cloud_name: 'dzmz24nr0', 
-    api_key: '411549117332673', 
-    api_secret: 'crgNRrcVJ7v6PA76-8HlbEzx5vE' 
+    cloud_name: process.env.CLOUD_NAME, 
+    api_key: process.env.API_KEY, 
+    api_secret: process.env.API_SECRET
 });
 
 app.use(express.json({limit: '50mb'}));
@@ -38,7 +39,8 @@ app.post('/', async (req,res)=>{
     const body = {
         url: req.body.url,
         public_id: req.body.public_id,
-        code: req.body.code
+        code: req.body.code,
+		extension: req.body.extension
     }
     const crater = await Crater.create(body).catch(e=>{
         console.log(e)
@@ -49,7 +51,12 @@ app.post('/', async (req,res)=>{
         await cloudinary.uploader.destroy(craterToDelete.public_id, async function(error,result) {
             console.log(result, error)
             if (result.result === 'not found'){
-                await cloudinary.uploader.destroy(craterToDelete.public_id, {resource_type: 'video'}, function(err, res2){console.log(res2,err)})
+                await cloudinary.uploader.destroy(craterToDelete.public_id, {resource_type: 'video'}, async function(err, res2){
+					console.log(res2,err)
+					if (res2.result=== 'not found'){
+						await cloudinary.uploader.destroy(craterToDelete.public_id, {resource_type: 'raw'}, function(err3, res3){console.log(err3, res3)})
+					}
+				})
             }
         }).catch((err)=>{
             console.log(err)

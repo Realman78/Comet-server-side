@@ -1,7 +1,4 @@
-async function downloadImage(imageSrc) {
-    const arr = imageSrc.split('.')
-    const ext = arr[arr.length-1]
- 
+async function downloadImage(imageSrc, ext) {
     const image = await fetch(imageSrc)
     const imageBlog = await image.blob()
     const imageURL = URL.createObjectURL(imageBlog)
@@ -19,7 +16,7 @@ $("document").ready(async ()=>{
     const data = await res.json()
     if (Array.isArray(data)){
         data.forEach((crater)=>{
-            downloadImage(crater.url)
+            downloadImage(crater.url, crater.extension)
         })
     }else{
         downloadImage(data.url)

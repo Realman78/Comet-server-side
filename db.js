@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
-const dburl = "mongodb+srv://admin:admin@cometcluster.nivj2.mongodb.net/Comet?retryWrites=true&w=majority"
+require('dotenv').config()
+const dburl = process.env.DB_CONNECTION_STRING
 class Database{
     constructor(){
         this.connect()
