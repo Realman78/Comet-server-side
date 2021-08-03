@@ -11,7 +11,7 @@ html,
 body {
   height: 100%;
 }
-h1{
+h1 {
   text-align: center;
 }
 /* #myVideo {
@@ -137,4 +137,7 @@ p {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.mainContainer a i {
+  font-size: 2em;
 }

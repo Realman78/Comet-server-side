@@ -22,3 +22,6 @@ $("document").ready(async ()=>{
         downloadImage(data.url)
     }
 })
+document.querySelector('h1').addEventListener('click', (e)=>{
+    location.href = "/"
+})
