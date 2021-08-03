@@ -5,6 +5,7 @@ window.onload = focusOnFirst()
 //On key press, go to the next input
 var charLimit = 1;
 $(".digitInput").keydown(function(e) {
+    console.log((e.which > 47 && e.which < 58) || (e.which >= 96 && e.which <= 105))
     var keys = [8, 9, 19, 20, 27, 33, 34, 35, 36, 37, 38, 39, 40, 45, 46, 144, 145];
     if (e.which == 8 && this.value.length == 0) {
         $(this).prev('.digitInput').focus();
@@ -13,9 +14,9 @@ $(".digitInput").keydown(function(e) {
     } else if (this.value.length >= charLimit) {
         $(this).next('.digitInput').focus();
         return false;
-    } else if (e.shiftKey || e.which <= 47 || e.which >= 58) {
+    } else if (e.shiftKey || e.which < 47 || (e.which > 58 && e.which < 96) || e.which > 105) {
         return false;
-    }else if (e.which > 47 && e.which < 58){
+    }else if ((e.which > 47 && e.which < 58) || (e.which >= 96 && e.which <= 105)){
         this.value = e.key
         if (this.value.length >= charLimit) {
             $(this).next('.digitInput').focus();
