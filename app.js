@@ -40,7 +40,7 @@ app.post('/', async (req,res)=>{
         url: req.body.url,
         public_id: req.body.public_id,
         code: req.body.code,
-		extension: req.body.extension
+        fileName: req.body.fileName
     }
     const crater = await Crater.create(body).catch(e=>{
         console.log(e)
