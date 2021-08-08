@@ -24,13 +24,13 @@ hbs.registerPartials(partialsPath)
 app.get('/', (req,res)=>{
     res.render('home')
 })
-app.get('/:code', async (req,res)=>{
+app.get('/:code/', async (req,res)=>{
     const crater = await Crater.findOne({code: req.params.code})
     .catch(e=>console.log(e))
     if (!crater) return res.render('error',{code: req.params.code, error: `No files with the code ${req.params.code}`})
     res.render('crater', crater)
 })
-app.get('/:code/get', async (req,res)=>{
+app.get('/:code/get/', async (req,res)=>{
     const craters = await Crater.find({code: req.params.code})
     if (craters.length == 0) return res.send({code: req.params.code, error: `No files with the code ${req.params.code}`})
     res.send(craters)
