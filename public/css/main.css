@@ -85,16 +85,12 @@ h1 {
   align-items: center;
   flex-shrink: 0;
   padding: 0;
-  margin: 0px;
+  margin-top: 0px;
 }
 p {
   font-size: large;
   color: var(--text-color);
   text-align: center;
-}
-#codeInput {
-  background-color: var(--text-color);
-  margin: 0px;
 }
 .informationContainer {
   margin-top: 30px;
