@@ -12,7 +12,7 @@ async function downloadImage(imageSrc, fileName) {
 }
 // $("document").ready(downloadImage(imgUrl))
 $("document").ready(async ()=>{
-    const res = await fetch(window.location.href + '/get')
+    const res = await fetch(window.location.href + '/get/')
     const data = await res.json()
     if (Array.isArray(data)){
         data.forEach((crater)=>{

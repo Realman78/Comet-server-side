@@ -13,6 +13,8 @@ cloudinary.config({
     api_secret: process.env.API_SECRET
 });
 
+var cors = require('cors');
+app.use(cors());
 app.use(express.json({limit: '50mb'}));
 app.use(express.json());
 app.set('views', path.join(__dirname, '/templates/views'))
@@ -20,6 +22,7 @@ app.set('view engine', 'hbs')
 app.use(express.static(path.join(__dirname, 'public')))
 const partialsPath = path.join(__dirname, '/templates/partials')
 hbs.registerPartials(partialsPath)
+app.set("")
 
 app.get('/', (req,res)=>{
     res.render('home')

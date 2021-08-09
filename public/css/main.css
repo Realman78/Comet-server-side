@@ -57,6 +57,7 @@ h1 {
   flex-direction: row;
   align-items: center;
   justify-content: space-evenly;
+  flex-shrink: 0;
 }
 .codeSection input {
   text-align: center;
@@ -80,6 +81,7 @@ h1 {
   font-size: 42px;
   font-weight: 200;
   align-items: center;
+  flex-shrink: 0;
   padding: 0;
   margin: 0;
 }
