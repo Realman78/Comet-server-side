@@ -28,6 +28,12 @@ $(".digitInput").keydown(function(e) {
         }
     }
 })
+$(".digitInput").each( function () {
+    var $this = $(this);
+    if (parseInt($this.css("fontSize")) < 50) {
+        $this.css({ "font-size": "50px" });   
+    }
+});
 function isFull(){
     code = ""
     for (const dig of inputs){
