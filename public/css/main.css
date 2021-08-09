@@ -58,6 +58,7 @@ h1 {
   align-items: center;
   justify-content: space-evenly;
   flex-shrink: 0;
+  height: fit-content;
 }
 .codeSection input {
   text-align: center;
