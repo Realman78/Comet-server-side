@@ -72,6 +72,8 @@ h1 {
 .codeSection .digitInput {
   width: 45px;
   height: 55px;
+  display: flex;
+  justify-content: center;
   background-color: var(--text-color);
   border: none;
   border-radius: 5px;
