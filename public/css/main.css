@@ -76,14 +76,14 @@ h1 {
   border: none;
   border-radius: 5px;
   color: rgb(46 46 46);
-  font-family: fantasy, sans-serif;
+  font-family: sans-serif;
   font-style: normal;
-  font-size: 42px;
-  font-weight: 200;
+  font-size: 50px;
+  font-weight: 600;
   align-items: center;
   flex-shrink: 0;
   padding: 0;
-  margin: 0;
+  margin: 0px;
 }
 p {
   font-size: large;
@@ -92,6 +92,7 @@ p {
 }
 #codeInput {
   background-color: var(--text-color);
+  margin: 0px;
 }
 .informationContainer {
   margin-top: 30px;
