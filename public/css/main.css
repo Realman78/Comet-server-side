@@ -75,7 +75,8 @@ h1 {
   border: none;
   border-radius: 5px;
   color: rgb(46 46 46);
-  font-family: fantasy;
+  font-family: fantasy, sans-serif;
+  font-style: normal;
   font-size: 42px;
   font-weight: 200;
   align-items: center;
