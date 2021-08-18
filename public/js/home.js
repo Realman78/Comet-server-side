@@ -34,6 +34,71 @@ $(".digitInput").each( function () {
         $this.css({ "font-size": "50px" });   
     }
 });
+document.getElementById("uploadButton").addEventListener('click', (ev)=>{
+    ev.preventDefault()
+    var input = document.createElement('input');
+    input.type = 'file';
+    input.multiple = "multiple"
+    input.onchange = async e => { 
+        let files = e.currentTarget.files;
+        if(!files.length) return;
+
+        for(let file of files){
+            blobToDataURL(file, async (result)=>  {
+                let filesBody = {}
+                var filename = file.name;
+
+                filesBody["filename"] = filename
+                filesBody["url"] =  result
+                const body = JSON.stringify({
+                    values: filesBody
+                })
+                
+                fetch(window.location.href + `api/upload`, {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body
+                })
+            })
+            
+        }
+
+        
+        // Promise.all(readers).then(async (values) => {
+        //     console.log(values)
+        //     const body = JSON.stringify({
+        //         values
+        //     })
+        //     const res = await fetch(window.location.href + `api/upload`, {
+        //         method: "POST",
+        //         headers: {
+        //             'Content-Type': 'application/json',
+        //             'Accept': 'application/json'
+        //         },
+        //         body
+        //     })
+        //     const data = await res.json()
+        //     console.log(data)
+        // });
+    }
+    input.click();
+})
+function blobToDataURL(blob, callback) {
+    var a = new FileReader();
+    a.onload = function(e) {callback(e.target.result);}
+    a.readAsDataURL(blob);
+}
+function readAsDataUrl(file){
+    let fr = new FileReader();
+    // fr.addEventListener('load', ()=>{
+    //     return fr.result
+    // })
+    // let ok = await fr.readAsDataURL(file)
+    return URL.createObjectURL(file)
+}
 function isFull(){
     code = ""
     for (const dig of inputs){

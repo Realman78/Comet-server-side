@@ -68,7 +68,21 @@ app.post('/', async (req,res)=>{
 
     res.send({"code":crater.code})
 })
-
+app.post("/api/upload", async (req,res)=>{
+    const file = req.body.values
+    const uploaded = await cloudinary.uploader.upload(file.url, function(err,res){
+        if (err) console.log(err, res)
+    })
+    const body = {
+        url: uploaded.url,
+        public_id: uploaded.public_id,
+        code: Math.trunc(Math.random() * (999999 - 100000) + 100000),
+        fileName: file.filename
+    }
+    console.log(body)
+    
+    res.send({"ok": "yes"})
+})
 app.listen(PORT, ()=>{
     console.log(`Server is up and running on port ${PORT}`)
 })
