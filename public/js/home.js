@@ -35,56 +35,56 @@ $(".digitInput").each( function () {
     }
 });
 let uploading = false
+let readers = []
+let filenames = []
 uploadButton.addEventListener('click', (ev)=>{
     ev.preventDefault()
-    if (uploading) return alert('please hold the fuck up')
-    input.onclick = (e)=>{
-        e.target.value = ''
-    }
+    if (uploading) return alert("please wait while the files upload")
     input.onchange = async e => { 
-        uploadButton.disabled = false
-        uploading = true
         let files = e.currentTarget.files;
-        let readers = []
-        let filenames = []
         if(!files.length) return
-        document.getElementById('loading').style.visibility = "visible"
-
         for(let file of files){
             filenames.push(file.name)
             readers.push(readAsDataUrl(file))
         }
-
-
-        
-        Promise.all(readers).then(async (values) => {
-            const body = JSON.stringify({
-                values,
-                filenames
-            })
-            const res = await fetch(window.location.href + `api/upload`, {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body
-            })
-            const data = await res.json()
-            console.log(data)
-            uploadButton.disabled = false
-            uploading = false
-            document.getElementById('loading').style.visibility = "hidden"
-            const numOfFilesString = data.files > 1 ? "files" : "file"
-            document.getElementById('timerP').textContent = `${data.files} ${numOfFilesString} uploaded\nCODE: ${data.code}`
-            setTimeout(()=>{
-                document.getElementById('timerP').textContent = ""
-            }, 30000)
-            
-        });
+        document.getElementById('timerP').innerHTML = `${readers.length} files ready to upload <button id="ok" onclick="upload()">Upload</button>`
     }
     input.click();
 })
+function upload(){
+    document.getElementById('loading').style.visibility = "visible"
+    uploadButton.disabled = false
+    uploading = true
+    Promise.all(readers).then(async (values) => {
+        const body = JSON.stringify({
+            values,
+            filenames
+        })
+        const res = await fetch(window.location.href + `api/upload`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body
+        })
+        const data = await res.json()
+        console.log(data)
+        uploadButton.disabled = false
+        uploading = false
+        readers = []
+        document.getElementById('loading').style.visibility = "hidden"
+        const numOfFilesString = data.files > 1 ? "files" : "file"
+        document.getElementById('timerP').textContent = `${data.files} ${numOfFilesString} uploaded\nCODE: ${data.code}`
+        setTimeout(()=>{
+            document.getElementById('timerP').textContent = ""
+        }, 30000)
+        
+    });
+}
+
+
+
 function readAsDataUrl(file){
     return new Promise(function(resolve,reject){
         let fr = new FileReader();
