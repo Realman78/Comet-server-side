@@ -68,6 +68,9 @@ app.post('/', async (req,res)=>{
 
     res.send({"code":crater.code})
 })
+app.get("/*/*", async (req,res)=>{
+    res.status(404).render('404')
+})
 app.post("/api/upload", async (req,res)=>{
     const files = req.body
     let uploadError = ""
@@ -115,7 +118,7 @@ app.post("/api/upload", async (req,res)=>{
                     }).catch((err)=>{
                         console.log(err)
                     })
-                } , 30000)
+                } , 300000)
             }
         }
         

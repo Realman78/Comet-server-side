@@ -48,11 +48,16 @@ uploadButton.addEventListener('click', (ev)=>{
             readers.push(readAsDataUrl(file))
         }
         const numOfFilesString = readers.length > 1 ? "files" : "file"
-        document.getElementById('timerP').innerHTML = `${readers.length} ${numOfFilesString} ready to upload <button id="ok" onclick="upload()">Upload</button>`
+        document.getElementById('timerP').innerHTML = `<button onclick="removeItems()" id="removeItemsButton"><i class="far fa-window-close"></i></button>${readers.length} ${numOfFilesString} ready to upload <button id="ok" onclick="upload()">Upload</button>`
         uploadButton.textContent = readers.length > 0 ? "Add more files" :"Add files"
     }
     input.click();
 })
+function removeItems(){
+    document.getElementById('timerP').textContent = ""
+    readers = []
+    filenames = []
+}
 function upload(){
     document.getElementById('ok').disabled = true
     document.getElementById('loading').style.visibility = "visible"
@@ -76,6 +81,7 @@ function upload(){
         uploadButton.disabled = false
         uploading = false
         readers = []
+        filenames = []
         uploadButton.textContent = "Add files"
         document.getElementById('ok').disabled = false
         document.getElementById('loading').style.visibility = "hidden"
@@ -83,7 +89,7 @@ function upload(){
         document.getElementById('timerP').textContent = `${data.files} ${numOfFilesString} uploaded\nCODE: ${data.code}`
         setTimeout(()=>{
             document.getElementById('timerP').textContent = ""
-        }, 30000)
+        }, 300000)
         
     });
 }
