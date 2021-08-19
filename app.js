@@ -69,19 +69,59 @@ app.post('/', async (req,res)=>{
     res.send({"code":crater.code})
 })
 app.post("/api/upload", async (req,res)=>{
-    const file = req.body.values
-    const uploaded = await cloudinary.uploader.upload(file.url, function(err,res){
-        if (err) console.log(err, res)
-    })
-    const body = {
-        url: uploaded.url,
-        public_id: uploaded.public_id,
-        code: Math.trunc(Math.random() * (999999 - 100000) + 100000),
-        fileName: file.filename
+    const files = req.body
+    let uploadError = ""
+    let uploadedIDs = []
+    let i = 0
+    const code = Math.trunc(Math.random() * (999999 - 100000) + 100000)
+    await Promise.all(files.values.map(async (el)=>{
+        const uploaded = await cloudinary.uploader.upload(el, {resource_type: "auto"}, function(err,res){
+        if (err) {
+            console.log(err, res) 
+            uploadError += err 
+        }
+        })
+        const body = {
+            url: uploaded.url,
+            public_id: uploaded.public_id,
+            code,
+            fileName: files.filenames[i]
+        }
+        const crater = await Crater.create(body).catch(e=>{
+            console.log(e)
+        })
+        uploadedIDs.push(crater._id)
+        i++
+    }))
+        
+    console.log(uploadedIDs)
+     
+    for (let id of uploadedIDs){
+        setTimeout(async ()=>{
+            const craterToDelete = await Crater.findByIdAndDelete(id)
+            if (!craterToDelete) return
+            await cloudinary.uploader.destroy(craterToDelete.public_id, async function(error,result) {
+                console.log(result, error)
+                if (result.result === 'not found'){
+                    await cloudinary.uploader.destroy(craterToDelete.public_id, {resource_type: 'video'}, async function(err, res2){
+                        console.log(res2,err)
+                        if (res2.result=== 'not found'){
+                            await cloudinary.uploader.destroy(craterToDelete.public_id, {resource_type: 'raw'}, function(err3, res3){console.log(err3, res3)})
+                        }
+                    })
+                }
+            }).catch((err)=>{
+                console.log(err)
+            })
+        } , 30000)
     }
-    console.log(body)
+
     
-    res.send({"ok": "yes"})
+    res.send({
+        code,
+        "files": req.body.values.length,
+        uploadError
+    })
 })
 app.listen(PORT, ()=>{
     console.log(`Server is up and running on port ${PORT}`)

@@ -5,7 +5,6 @@ window.onload = focusOnFirst()
 //On key press, go to the next input
 var charLimit = 1;
 $(".digitInput").keydown(function(e) {
-    console.log((e.which > 47 && e.which < 58) || (e.which >= 96 && e.which <= 105))
     var keys = [8, 9, 19, 20, 27, 33, 34, 35, 36, 37, 38, 39, 40, 45, 46, 144, 145];
     if (e.which == 8 && this.value.length == 0) {
         $(this).prev('.digitInput').focus();
@@ -39,50 +38,42 @@ document.getElementById("uploadButton").addEventListener('click', (ev)=>{
     var input = document.createElement('input');
     input.type = 'file';
     input.multiple = "multiple"
+    input.onclick = ()=>{
+        console.log('ok')
+    }
     input.onchange = async e => { 
         let files = e.currentTarget.files;
+        let readers = []
+        let filenames = []
         if(!files.length) return;
+        document.getElementById('loading').style.visibility = "visible"
 
         for(let file of files){
-            blobToDataURL(file, async (result)=>  {
-                let filesBody = {}
-                var filename = file.name;
-
-                filesBody["filename"] = filename
-                filesBody["url"] =  result
-                const body = JSON.stringify({
-                    values: filesBody
-                })
-                
-                fetch(window.location.href + `api/upload`, {
-                    method: "POST",
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body
-                })
-            })
-            
+            filenames.push(file.name)
+            readers.push(readAsDataUrl(file))
         }
 
+
         
-        // Promise.all(readers).then(async (values) => {
-        //     console.log(values)
-        //     const body = JSON.stringify({
-        //         values
-        //     })
-        //     const res = await fetch(window.location.href + `api/upload`, {
-        //         method: "POST",
-        //         headers: {
-        //             'Content-Type': 'application/json',
-        //             'Accept': 'application/json'
-        //         },
-        //         body
-        //     })
-        //     const data = await res.json()
-        //     console.log(data)
-        // });
+        Promise.all(readers).then(async (values) => {
+            const body = JSON.stringify({
+                values,
+                filenames
+            })
+            const res = await fetch(window.location.href + `api/upload`, {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body
+            })
+            const data = await res.json()
+            console.log(data)
+            document.getElementById('loading').style.visibility = "hidden"
+            const numOfFilesString = data.files > 1 ? "files" : "file"
+            document.getElementById('timerP').textContent = `${data.files} ${numOfFilesString} uploaded\nCODE: ${data.code}`
+        });
     }
     input.click();
 })
@@ -92,12 +83,19 @@ function blobToDataURL(blob, callback) {
     a.readAsDataURL(blob);
 }
 function readAsDataUrl(file){
-    let fr = new FileReader();
-    // fr.addEventListener('load', ()=>{
-    //     return fr.result
-    // })
-    // let ok = await fr.readAsDataURL(file)
-    return URL.createObjectURL(file)
+    return new Promise(function(resolve,reject){
+        let fr = new FileReader();
+
+        fr.onload = function(){
+            resolve(fr.result);
+        };
+
+        fr.onerror = function(){
+            reject(fr);
+        };
+
+        fr.readAsDataURL(file);
+    });
 }
 function isFull(){
     code = ""
