@@ -47,12 +47,9 @@ uploadButton.addEventListener('click', (ev)=>{
             filenames.push(file.name)
             readers.push(readAsDataUrl(file))
         }
-        document.getElementById('timerP').innerHTML = `${readers.length} files ready to upload <button id="ok" onclick="upload()">Upload</button>`
-        if (readers.length >0 ) {
-            uploadButton.textContent = "Add more files"
-        }else{
-            uploadButton.textContent = "Add files"
-        }
+        const numOfFilesString = readers.length > 1 ? "files" : "file"
+        document.getElementById('timerP').innerHTML = `${readers.length} ${numOfFilesString} ready to upload <button id="ok" onclick="upload()">Upload</button>`
+        uploadButton.textContent = readers.length > 0 ? "Add more files" :"Add files"
     }
     input.click();
 })
