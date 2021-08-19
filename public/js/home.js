@@ -48,10 +48,16 @@ uploadButton.addEventListener('click', (ev)=>{
             readers.push(readAsDataUrl(file))
         }
         document.getElementById('timerP').innerHTML = `${readers.length} files ready to upload <button id="ok" onclick="upload()">Upload</button>`
+        if (readers.length >0 ) {
+            uploadButton.textContent = "Add more files"
+        }else{
+            uploadButton.textContent = "Add files"
+        }
     }
     input.click();
 })
 function upload(){
+    document.getElementById('ok').disabled = true
     document.getElementById('loading').style.visibility = "visible"
     uploadButton.disabled = false
     uploading = true
@@ -73,6 +79,8 @@ function upload(){
         uploadButton.disabled = false
         uploading = false
         readers = []
+        uploadButton.textContent = "Add files"
+        document.getElementById('ok').disabled = false
         document.getElementById('loading').style.visibility = "hidden"
         const numOfFilesString = data.files > 1 ? "files" : "file"
         document.getElementById('timerP').textContent = `${data.files} ${numOfFilesString} uploaded\nCODE: ${data.code}`
