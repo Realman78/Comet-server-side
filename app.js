@@ -72,49 +72,55 @@ app.post("/api/upload", async (req,res)=>{
     const files = req.body
     let uploadError = ""
     let uploadedIDs = []
-    let i = 0
+    const reads = []
     const code = Math.trunc(Math.random() * (999999 - 100000) + 100000)
-    await Promise.all(files.values.map(async (el)=>{
-        const uploaded = await cloudinary.uploader.upload(el, {resource_type: "auto"}, function(err,res){
+    for(let i = 0; i < req.body.values.length;i++){
+        const uploaded = cloudinary.uploader.upload(files.values[i], {resource_type: "auto"}, function(err,res){
         if (err) {
             console.log(err, res) 
             uploadError += err 
         }
         })
-        const body = {
-            url: uploaded.url,
-            public_id: uploaded.public_id,
-            code,
-            fileName: files.filenames[i]
-        }
-        const crater = await Crater.create(body).catch(e=>{
-            console.log(e)
-        })
-        uploadedIDs.push(crater._id)
-        i++
-    }))
-        
-    console.log(uploadedIDs)
-     
-    for (let id of uploadedIDs){
-        setTimeout(async ()=>{
-            const craterToDelete = await Crater.findByIdAndDelete(id)
-            if (!craterToDelete) return
-            await cloudinary.uploader.destroy(craterToDelete.public_id, async function(error,result) {
-                console.log(result, error)
-                if (result.result === 'not found'){
-                    await cloudinary.uploader.destroy(craterToDelete.public_id, {resource_type: 'video'}, async function(err, res2){
-                        console.log(res2,err)
-                        if (res2.result=== 'not found'){
-                            await cloudinary.uploader.destroy(craterToDelete.public_id, {resource_type: 'raw'}, function(err3, res3){console.log(err3, res3)})
-                        }
-                    })
-                }
-            }).catch((err)=>{
-                console.log(err)
-            })
-        } , 30000)
+        reads.push(uploaded)
     }
+    await Promise.all(reads).then(async (uploads)=>{
+        let i = 0
+        for (let uploaded of uploads){
+            const body = {
+                url: uploaded.url,
+                public_id: uploaded.public_id,
+                code,
+                fileName: files.filenames[i]
+            }
+            i++
+            const crater = await Crater.create(body).catch(e=>{
+                console.log(e)
+            })
+            uploadedIDs.push(crater._id)
+     
+            for (let id of uploadedIDs){
+                setTimeout(async ()=>{
+                    const craterToDelete = await Crater.findByIdAndDelete(id)
+                    if (!craterToDelete) return
+                    await cloudinary.uploader.destroy(craterToDelete.public_id, async function(error,result) {
+                        console.log(result, error)
+                        if (result.result === 'not found'){
+                            await cloudinary.uploader.destroy(craterToDelete.public_id, {resource_type: 'video'}, async function(err, res2){
+                                console.log(res2,err)
+                                if (res2.result=== 'not found'){
+                                    await cloudinary.uploader.destroy(craterToDelete.public_id, {resource_type: 'raw'}, function(err3, res3){console.log(err3, res3)})
+                                }
+                            })
+                        }
+                    }).catch((err)=>{
+                        console.log(err)
+                    })
+                } , 30000)
+            }
+        }
+        
+    })
+    
 
     
     res.send({

@@ -1,6 +1,7 @@
 let code = ""
 const inputs = document.getElementsByClassName('digitInput')
-
+const uploadButton = document.getElementById("uploadButton")
+var input = document.getElementById('uploadFile');
 window.onload = focusOnFirst()
 //On key press, go to the next input
 var charLimit = 1;
@@ -33,19 +34,20 @@ $(".digitInput").each( function () {
         $this.css({ "font-size": "50px" });   
     }
 });
-document.getElementById("uploadButton").addEventListener('click', (ev)=>{
+let uploading = false
+uploadButton.addEventListener('click', (ev)=>{
     ev.preventDefault()
-    var input = document.createElement('input');
-    input.type = 'file';
-    input.multiple = "multiple"
-    input.onclick = ()=>{
-        console.log('ok')
+    if (uploading) return alert('please hold the fuck up')
+    input.onclick = (e)=>{
+        e.target.value = ''
     }
     input.onchange = async e => { 
+        uploadButton.disabled = false
+        uploading = true
         let files = e.currentTarget.files;
         let readers = []
         let filenames = []
-        if(!files.length) return;
+        if(!files.length) return
         document.getElementById('loading').style.visibility = "visible"
 
         for(let file of files){
@@ -70,18 +72,19 @@ document.getElementById("uploadButton").addEventListener('click', (ev)=>{
             })
             const data = await res.json()
             console.log(data)
+            uploadButton.disabled = false
+            uploading = false
             document.getElementById('loading').style.visibility = "hidden"
             const numOfFilesString = data.files > 1 ? "files" : "file"
             document.getElementById('timerP').textContent = `${data.files} ${numOfFilesString} uploaded\nCODE: ${data.code}`
+            setTimeout(()=>{
+                document.getElementById('timerP').textContent = ""
+            }, 30000)
+            
         });
     }
     input.click();
 })
-function blobToDataURL(blob, callback) {
-    var a = new FileReader();
-    a.onload = function(e) {callback(e.target.result);}
-    a.readAsDataURL(blob);
-}
 function readAsDataUrl(file){
     return new Promise(function(resolve,reject){
         let fr = new FileReader();
