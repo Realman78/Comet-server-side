@@ -153,3 +153,7 @@ p {
   border: none;
   border-radius: 6px;
 }
+#removeItemsButton {
+  border: none;
+  margin-right: 5px;
+}

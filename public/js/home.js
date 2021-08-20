@@ -55,6 +55,7 @@ uploadButton.addEventListener('click', (ev)=>{
 })
 function removeItems(){
     document.getElementById('timerP').textContent = ""
+    uploadButton.textContent = "Add files"
     readers = []
     filenames = []
 }
