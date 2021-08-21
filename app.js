@@ -78,10 +78,10 @@ app.post("/api/upload", async (req,res)=>{
     const reads = []
     const code = Math.trunc(Math.random() * (999999 - 100000) + 100000)
     for(let i = 0; i < req.body.values.length;i++){
-        const uploaded = cloudinary.uploader.upload(files.values[i], {resource_type: "auto"}, function(err,res){
+        let uploaded = cloudinary.uploader.upload(files.values[i], {resource_type: "auto"}, function(err,result){
         if (err) {
-            console.log(err, res) 
-            uploadError += err 
+            console.log(err, result) 
+            uploadError += err
         }
         })
         reads.push(uploaded)
@@ -121,15 +121,19 @@ app.post("/api/upload", async (req,res)=>{
                 } , 300000)
             }
         }
+        return res.send({
+            code,
+            "files": req.body.values.length,
+            uploadError
+        })
         
-    })
-    
-
-    
-    res.send({
-        code,
-        "files": req.body.values.length,
-        uploadError
+    }).catch((error)=>{
+        console.log(error)
+        return res.send({
+            "uploadError": error,
+            code,
+            "files": req.body.values.length,
+        })
     })
 })
 app.listen(PORT, ()=>{

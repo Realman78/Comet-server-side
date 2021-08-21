@@ -40,29 +40,33 @@ let filenames = []
 uploadButton.addEventListener('click', (ev)=>{
     ev.preventDefault()
     if (uploading) return alert("please wait while the files upload")
-    input.onchange = async e => { 
-        let files = e.currentTarget.files;
-        if(!files.length) return
-        for(let file of files){
-            filenames.push(file.name)
-            readers.push(readAsDataUrl(file))
-        }
-        const numOfFilesString = readers.length > 1 ? "files" : "file"
-        document.getElementById('timerP').innerHTML = `<button onclick="removeItems()" id="removeItemsButton"><i class="far fa-window-close"></i></button>${readers.length} ${numOfFilesString} ready to upload <button id="ok" onclick="upload()">Upload</button>`
-        uploadButton.textContent = readers.length > 0 ? "Add more files" :"Add files"
-    }
     input.click();
+})
+input.addEventListener('change', async (e)=>{
+    e.preventDefault()
+    let files = e.currentTarget.files;
+    if(!files.length) return
+    for(let file of files){
+        filenames.push(file.name)
+        readers.push(readAsDataUrl(file))
+    }
+    const numOfFilesString = readers.length > 1 ? "files" : "file"
+    document.getElementById('timerP').innerHTML = `<button onclick="removeItems()" id="removeItemsButton"><i class="far fa-window-close"></i></button>${readers.length} ${numOfFilesString} ready to upload <button id="uploadToServerButton" onclick="upload()">Upload</button>`
+    uploadButton.textContent = readers.length > 0 ? "Add more files" :"Add files"
 })
 function removeItems(){
     document.getElementById('timerP').textContent = ""
     uploadButton.textContent = "Add files"
+    input.value = ""
     readers = []
     filenames = []
 }
 function upload(){
-    document.getElementById('ok').disabled = true
+    document.getElementById('removeItemsButton').disabled = true
+    document.getElementById('uploadToServerButton').disabled = true
     document.getElementById('loading').style.visibility = "visible"
-    uploadButton.disabled = false
+    document.getElementById("last").disabled = true
+    uploadButton.disabled = true
     uploading = true
     Promise.all(readers).then(async (values) => {
         const body = JSON.stringify({
@@ -80,19 +84,36 @@ function upload(){
         const data = await res.json()
         console.log(data)
         uploadButton.disabled = false
+        document.getElementById("last").disabled = false
         uploading = false
         readers = []
         filenames = []
+        input.value = ""
         uploadButton.textContent = "Add files"
-        document.getElementById('ok').disabled = false
+        document.getElementById('uploadToServerButton').disabled = false
+        document.getElementById('removeItemsButton').disabled = false
         document.getElementById('loading').style.visibility = "hidden"
+        if (data.uploadError){
+            let message = `File(s) size too large. Max individual file size is 10MB.`
+            document.getElementById('timerP').textContent = data.uploadError.message.includes("File size too large") ? message : "Something went wrong"
+            return 
+        }
         const numOfFilesString = data.files > 1 ? "files" : "file"
-        document.getElementById('timerP').textContent = `${data.files} ${numOfFilesString} uploaded\nCODE: ${data.code}`
+        document.getElementById('timerP').innerHTML = `${data.files} ${numOfFilesString} uploaded <span class="codeSpan">CODE: ${data.code}</span>`
         setTimeout(()=>{
             document.getElementById('timerP').textContent = ""
         }, 300000)
         
-    });
+    }).catch((e)=>{
+        console.log(e)
+        uploadButton.disabled = false
+        document.getElementById("last").disabled = false
+        uploading = false
+        document.getElementById('uploadToServerButton').disabled = false
+        document.getElementById('removeItemsButton').disabled = false
+        document.getElementById('loading').style.visibility = "hidden"
+        document.getElementById('timerP').textContent = "Something went wrong"
+    })
 }
 
 
@@ -132,11 +153,18 @@ function focusOnFirst(){
 }
 async function redirectToCrater(tmpCode){
     const res = await fetch(window.location.href + `${tmpCode}/get`)
+        .catch((e)=>{
+            document.getElementById('info').textContent = "Something went wrong"
+            infoFadeout()
+        })
     const data = await res.json()
+    $("#info").stop(true,true)
     document.getElementById('loading').style.visibility = "hidden"
     if (data.error){
         cleanInputs()
+        document.getElementById('info').style.display = "block"
         document.getElementById('info').textContent = data.error
+        infoFadeout()
         return
     }
 	
@@ -148,4 +176,13 @@ async function redirectToCrater(tmpCode){
     }
 	cleanInputs()
     location.href = `/${data.code}`
+}
+
+function infoFadeout(){
+    setTimeout(()=>{
+        $("#info").fadeOut(2000, ()=>{
+            document.getElementById('info').textContent = ""
+            document.getElementById('info').style.display = "block"
+        })
+    }, 5000)
 }
