@@ -5,6 +5,7 @@ var input = document.getElementById('uploadFile');
 window.onload = focusOnFirst()
 //On key press, go to the next input
 var charLimit = 1;
+
 $(".digitInput").keydown(function(e) {
     var keys = [8, 9, 19, 20, 27, 33, 34, 35, 36, 37, 38, 39, 40, 45, 46, 144, 145];
     if (e.which == 8 && this.value.length == 0) {
@@ -34,6 +35,29 @@ $(".digitInput").each( function () {
         $this.css({ "font-size": "50px" });   
     }
 });
+$("#first").keydown(function(e){
+    if (e.ctrlKey && e.key == "v")
+    {
+        e.stopPropagation();
+        e.preventDefault();
+
+        navigator.clipboard.readText()
+        .then(text => {
+            if (text.length == 6 && /^\d+$/.test(text)) {
+                for (let i = 0; i < inputs.length; i++){
+                    inputs[i].value = text[i]
+                    if (isFull()){
+                        document.getElementById('loading').style.visibility = "visible"
+                        redirectToCrater(code)
+                    }
+                }
+            }
+        })
+        .catch(err => {
+            console.error('Failed to read clipboard contents: ', err);
+        });
+    }
+})
 let uploading = false
 let readers = []
 let filenames = []
@@ -99,7 +123,7 @@ function upload(){
             return 
         }
         const numOfFilesString = data.files > 1 ? "files" : "file"
-        document.getElementById('timerP').innerHTML = `${data.files} ${numOfFilesString} uploaded <span class="codeSpan">CODE: ${data.code}</span>`
+        document.getElementById('timerP').innerHTML = `${data.files} ${numOfFilesString} uploaded <span class="codeSpan">CODE: ${data.code}  <i onclick="copy(${data.code})" class="far fa-copy"></i></span>`
         setTimeout(()=>{
             document.getElementById('timerP').textContent = ""
         }, 300000)
@@ -115,9 +139,13 @@ function upload(){
         document.getElementById('timerP').textContent = "Something went wrong"
     })
 }
-
-
-
+function copy(string){
+    navigator.clipboard.writeText(string);
+    document.querySelector('.fa-copy').style.color = "green"
+    setTimeout(()=>{
+        document.querySelector('.fa-copy').style.color = "white"
+    },2000)
+}
 function readAsDataUrl(file){
     return new Promise(function(resolve,reject){
         let fr = new FileReader();

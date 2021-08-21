@@ -181,3 +181,7 @@ p {
   font-size: 20px;
   font-weight: 500;
 }
+.fa-copy {
+  cursor: pointer;
+  margin-left: 5px;
+}
