@@ -36,7 +36,7 @@ $(".digitInput").each( function () {
     }
 });
 $("#first").keydown(function(e){
-    if (e.ctrlKey && e.key == "v")
+    if (e.ctrlKey && e.key == "v" && !uploading)
     {
         e.stopPropagation();
         e.preventDefault();
