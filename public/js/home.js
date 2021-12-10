@@ -124,8 +124,13 @@ function upload(){
         }
         const numOfFilesString = data.files > 1 ? "files" : "file"
         document.getElementById('timerP').innerHTML = `${data.files} ${numOfFilesString} uploaded <span class="codeSpan">CODE: ${data.code}  <i onclick="copy(${data.code})" class="far fa-copy"></i></span>`
+        new QRCode(document.getElementById("qrcode"), "http://upcomet.herokuapp.com/" + data.code);
+        const scanCodeP = document.createElement('p')
+        scanCodeP.textContent = "Or scan this code!"
+        document.getElementById("qrcode").prepend(scanCodeP)
         setTimeout(()=>{
             document.getElementById('timerP').textContent = ""
+            document.getElementById("qrcode").innerHTML = ""
         }, 300000)
         
     }).catch((e)=>{
@@ -137,6 +142,8 @@ function upload(){
         document.getElementById('removeItemsButton').disabled = false
         document.getElementById('loading').style.visibility = "hidden"
         document.getElementById('timerP').textContent = "Something went wrong"
+        document.getElementById("qrcode").innerHTML = ""
+
     })
 }
 function copy(string){
