@@ -188,5 +188,9 @@ p {
 #qrcode{
   position: fixed;
   top: 30%;
-  right: 15vw;
+  right: 5vw;
+  width: 20%;
+}
+img{
+  width: 100%;
 }
